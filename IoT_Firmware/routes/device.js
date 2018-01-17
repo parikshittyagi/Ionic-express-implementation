@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+//requiring the schema to connect with DB
 const Devices = require("../models/device")
 
-
+//API to get the list of all registered vehicles
 router.get('/',(req,res,next)=>{
     Devices.getDevices((err, device)=>{
         if(err){
@@ -22,6 +23,7 @@ router.get('/',(req,res,next)=>{
     });
 });
 
+//API to get the list of all registered vehicles through mongo id
 router.get('/:_Id',(req,res,next)=>{
     var Id = req.params._Id
     Devices.getDeviceByID(Id,(err, devices)=>{
@@ -42,27 +44,7 @@ router.get('/:_Id',(req,res,next)=>{
     });
 });
 
-router.get('/byDevName/:_ID',(req,res,next)=>{
-    var Name = req.params._ID
-    console.log(devices)
-    Devices.getDeviceByDeviceName(Name,(err, devices)=>{
-        if(err){
-            console.error(err)
-            res.json({
-                success:false,
-                msg:"Some error"
-            });
-        }
-        else {
-            res.json({
-                success:true,
-                devices:devices
-            });
-        }
-        
-    });
-});
-
+//API for registering the vehicle and if that vehicle is already registered than doesnot register it
 router.post('/register',(req, res,next)=>{
     
     var newDevice = req.body;
@@ -89,7 +71,7 @@ router.post('/register',(req, res,next)=>{
                 res.json({
                     success:true,
                     msg:"Registered UUID is =",
-                    UUID:device._id
+                    UUID:device._id                    //returning an UUID to the registered vehicle
                 });
         }
     });
@@ -97,6 +79,7 @@ router.post('/register',(req, res,next)=>{
 });
 });
 
+//API written to update the metadata of the registered vehicle in DB
 router.put('/update',(req, res)=> {
     var newdevice = req.body;
     console.log(newdevice);
@@ -128,37 +111,5 @@ router.put('/update',(req, res)=> {
     }
 });
 })
-
-
- 
-router.delete('/remove',(req, res,next)=>{
-    var newDevice = req.body;
-    var Id = newDevice.device_ID;
-    Devices.getDeviceByDeviceID(Id,(err, device)=>{
-        if (device.length != 0){
-            Devices.removeDevice(Id, (err, device) =>{
-                if(err){
-                    console.error(err);
-                    res.json({
-                        success:false,
-                        msg: "some error"
-                    });
-                }
-                else {
-                        res.json({
-                            success:true,
-                            msg:"Device Removed"
-                        });
-                }
-            });
-        }
-            else {
-                res.json({
-                    success:false,
-                    msg:"Device doesnot exits"
-                });
-             }
-        }); 
-    });  
        
 module.exports = router;

@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
+//Schema required for connecting the registering the vehicle
 const DeviceSchema = mongoose.Schema({
-    device_Name: {
+    vehicle_Name: {
         type: String,
         required: true,
     },
 
     
-    device_Type: {
+    vehicle_Type: {
         type: String,
         required: true
     },
@@ -24,7 +25,9 @@ const DeviceSchema = mongoose.Schema({
     }
 });
 
+
 const Device = module.exports = mongoose.model('Device',DeviceSchema);
+
 
 module.exports.addDevice = (device, callback)=> {
     Device.create(device, callback);
@@ -58,10 +61,4 @@ module.exports.updateDevice = (device, options, callback) => {
     Device.findOneAndUpdate(query, update, options, callback);
 }
 
-module.exports.removeDevice = (Device_Name, callback)=>{
-    query = {
-        device_Name:Device_Name
-    };
-    Device.remove(query, callback);
-}
 
